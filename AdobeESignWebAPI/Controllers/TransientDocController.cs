@@ -20,12 +20,12 @@ namespace AdobeESignWebAPI.Controllers
             _webAPIClient = webAPIClient;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        [HttpGet("Agreement")]
+        public async Task<IActionResult> Agreement()
         {
             try
             {
-                var result = await _webAPIClient.GetTestingAsync();
+                var result = await _webAPIClient.GetAgreementAsync();
                 return new JsonResult(new { issuccess = true, message = "Success", data = result });
             }
             catch (Exception ex)
@@ -36,7 +36,7 @@ namespace AdobeESignWebAPI.Controllers
 
         [HttpPost]
         [Route("upload")]
-        public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
+        public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] string email)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace AdobeESignWebAPI.Controllers
 
                     transientDocID = await _webAPIClient.UploadTransientDoc(uploadedInvoiceByteArr, file.FileName);
 
-                    agreementID = await _webAPIClient.PostAgreement(transientDocID, "jex_calerie@outlook.com");
+                    agreementID = await _webAPIClient.PostAgreement(transientDocID, email);
 
                     //docUrl = await _webAPIClient.ViewAgreement(agreementID);
                 }

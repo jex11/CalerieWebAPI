@@ -1,6 +1,6 @@
 ﻿namespace AdobeESignWebAPI.Model
 {
-    public class FileInfos
+    public class FileInfosModel
     {
         public string transientDocumentId { get; set; }
     }

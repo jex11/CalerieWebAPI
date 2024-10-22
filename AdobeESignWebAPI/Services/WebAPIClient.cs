@@ -51,7 +51,7 @@ namespace AdobeESignWebAPI.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
-                    var test = JsonSerializer.Deserialize<TransientDocumentResponse>(result);
+                    var test = JsonSerializer.Deserialize<TransientDocumentResponseModel>(result);
                     return test.transientDocumentId;
                 }
                 else
@@ -62,8 +62,8 @@ namespace AdobeESignWebAPI.Services
             }      
         }
 
-        // Example method to get weather forecast from the API
-        public async Task<string> GetTestingAsync()
+
+        public async Task<string> GetAgreementAsync()
         {
             var response = await _httpClient.GetAsync("/api/rest/v6/agreements");
 
@@ -79,8 +79,8 @@ namespace AdobeESignWebAPI.Services
                 name = "Calerie Invoice",
                 signatureType = "ESIGN",
                 state = "IN_PROCESS",
-                fileInfos = new List<FileInfos> { new FileInfos { transientDocumentId = transientDocID } },
-                participantSetsInfo = new List<ParticipantSetsInfo> { new ParticipantSetsInfo { order = 1, role = "SIGNER", memberInfos = new List<MemberInfos> { new MemberInfos { email = email } } } },
+                fileInfos = new List<FileInfosModel> { new FileInfosModel { transientDocumentId = transientDocID } },
+                participantSetsInfo = new List<ParticipantSetsInfoModel> { new ParticipantSetsInfoModel { order = 1, role = "SIGNER", memberInfos = new List<MemberInfosModel> { new MemberInfosModel { email = email } } } },
             };
           
             var response = await _httpClient.PostAsJsonAsync("api/rest/v6/agreements", model);
@@ -102,7 +102,7 @@ namespace AdobeESignWebAPI.Services
             var response = await _httpClient.GetAsync($"api/rest/v6/agreements/{agreementID}/signingUrls");
 
             var content = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<AgreementSigningUrlsResponse>(content);
+            var result = JsonSerializer.Deserialize<AgreementSigningUrlsResponseModel>(content);
 
             return result.signingUrlSetInfos.FirstOrDefault().signingUrls.FirstOrDefault().esignUrl;
         }

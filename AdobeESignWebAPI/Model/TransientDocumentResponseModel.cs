@@ -1,6 +1,6 @@
 ﻿namespace AdobeESignWebAPI.Model
 {
-    public class TransientDocumentResponse
+    public class TransientDocumentResponseModel
     {
         public string transientDocumentId { get; set; }
     }

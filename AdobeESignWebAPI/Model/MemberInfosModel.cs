@@ -1,6 +1,6 @@
 ﻿namespace AdobeESignWebAPI.Model
 {
-    public class MemberInfos
+    public class MemberInfosModel
     {
         public string email { get; set; }
     }
