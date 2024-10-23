@@ -97,6 +97,37 @@ namespace AdobeESignWebAPI.Services
             }
         }
 
+        /// <summary>
+        /// For standard agreement that can be reuse for multiple agreements
+        /// </summary>
+        /// <param name="transientDocID"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<string> PostLibraryDocument(string transientDocID)
+        {
+            PostLibraryDocumentRequestModel model = new PostLibraryDocumentRequestModel
+            {
+                name = "Calerie Invoice Template",    
+                sharingMode = "ACCOUNT",
+                state = "ACTIVE",
+                templateTypes = new List<string> { "DOCUMENT" },
+                fileInfos = new List<FileInfosModel> { new FileInfosModel { transientDocumentId = transientDocID } }                
+            };
+
+            var response = await _httpClient.PostAsJsonAsync("api/rest/v6/libraryDocuments", model);
+            if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created)
+            {
+                var contentStr = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<PostAgreementResponseModel>(contentStr);
+                return result.id;
+            }
+            else
+            {
+                Console.WriteLine("File upload failed. Status code: " + response.StatusCode);
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
         public async Task<string> GetSigningUrls(string agreementID)
         {
             var response = await _httpClient.GetAsync($"api/rest/v6/agreements/{agreementID}/signingUrls");

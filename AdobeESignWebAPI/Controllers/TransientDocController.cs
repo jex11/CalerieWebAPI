@@ -20,7 +20,7 @@ namespace AdobeESignWebAPI.Controllers
             _webAPIClient = webAPIClient;
         }
 
-        [HttpGet("Agreement")]
+        [HttpGet("agreement")]
         public async Task<IActionResult> Agreement()
         {
             try
@@ -36,7 +36,7 @@ namespace AdobeESignWebAPI.Controllers
 
         [HttpPost]
         [Route("upload")]
-        public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] string email)
+        public async Task<IActionResult> UploadFile([FromForm] FileUploadRequestModel model)
         {
             try
             {
@@ -44,20 +44,23 @@ namespace AdobeESignWebAPI.Controllers
                 string transientDocID = "";
                 string agreementID = "";
                 string docUrl = "";
-                if (file == null || file.Length == 0)
+                if (model.file == null || model.file.Length == 0)
                     return BadRequest("No file was uploaded.");
 
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles", file.FileName);
+                if(string.IsNullOrWhiteSpace(model.email))
+                    return BadRequest("No file was uploaded.");
+
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles", model.file.FileName);
 
                 using (var memoryStream = new MemoryStream())
                 {
                     // Copy the uploaded file's stream into the memory stream
-                    await file.CopyToAsync(memoryStream);
+                    await model.file.CopyToAsync(memoryStream);
                     uploadedInvoiceByteArr = memoryStream.ToArray();  // Convert the memory stream into a byte array
 
-                    transientDocID = await _webAPIClient.UploadTransientDoc(uploadedInvoiceByteArr, file.FileName);
+                    transientDocID = await _webAPIClient.UploadTransientDoc(uploadedInvoiceByteArr, model.file.FileName);
 
-                    agreementID = await _webAPIClient.PostAgreement(transientDocID, email);
+                    agreementID = await _webAPIClient.PostAgreement(transientDocID, model.email);
 
                     //docUrl = await _webAPIClient.ViewAgreement(agreementID);
                 }
