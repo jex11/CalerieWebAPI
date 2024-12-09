@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.Configure<WebAPISetting>(builder.Configuration.GetSection("WebAPISetting"));
-builder.Services.AddScoped<WebAPIClient>();
+builder.Services.AddScoped<WebAPIClient>();gerhe
 // Register the HttpClient and the WeatherApiClient
 //builder.Services.AddHttpClient<WebAPIClient>((serviceProvider, client) =>
 //{
